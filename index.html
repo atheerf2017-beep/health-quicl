@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مسابقة الأمراض المعدية وغير المعدية المصورة</title>
+<style>
+  * { box-sizing: border-box; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif; }
+  body {
+    margin: 0;
+    padding: 16px;
+    background: #f1f5f9;
+    color: #0f172a;
+    direction: rtl;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; }
+  .panel {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+    border: 1px solid #e2e8f0;
+  }
+  .top-pill {
+    display: inline-block;
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  h1 { margin: 4px 0 10px; font-size: 25px; }
+  .credits { display: flex; flex-wrap: wrap; gap: 8px; }
+  .credits span {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+  .credits span.teacher { background: #fef3c7; color: #92400e; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 14px 0; }
+  .grid-2 input {
+    width: 100%;
+    padding: 11px 12px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .btn {
+    border: 0;
+    border-radius: 14px;
+    padding: 12px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-main { background: #0284c7; color: #ffffff; width: 100%; }
+  .btn-soft { background: #e2e8f0; color: #0f172a; }
+  .scores { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
+  .score-card {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 8px;
+    text-align: center;
+  }
+  .score-card.now { border-color: #0284c7; background: #f0f9ff; }
+  .score-card strong { display: block; font-size: 13px; }
+  .score-card b { font-size: 19px; color: #0284c7; }
+  .opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 14px 0; }
+  .opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: right;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 2px solid #cbd5e1;
+    background: #f8fafc;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .opt .ico { font-size: 22px; }
+  .opt.good { background: #dcfce7; border-color: #16a34a; color: #14532d; }
+  .opt.bad { background: #fee2e2; border-color: #dc2626; color: #7f1d1d; }
+  .msg { padding: 12px 14px; border-radius: 12px; font-weight: 700; margin-bottom: 12px; }
+  .msg.good { background: #dcfce7; color: #14532d; }
+  .msg.bad { background: #fee2e2; color: #7f1d1d; }
+  .hide { display: none !important; }
+  .bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .rank {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  @media (max-width: 640px) {
+    .scores { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .opts { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel">
+    <div class="top-pill">✨ مسابقة تفاعلية مصورة • 4 مجموعات • 12 سؤالاً</div>
+    <h1>الأمراض المعدية وغير المعدية</h1>
+    <div class="credits">
+      <span>🌸 إعداد الطالبة: إيلاف الثنيان</span>
+      <span class="teacher">🌟 إشراف المعلمة: ابتسام الزهراني</span>
+    </div>
+  </div>
+
+  <div id="setupPanel" class="panel">
+    <h2>تحدي المجموعات الأربع</h2>
+    <p style="margin:6px 0 10px;color:#475569;">3 أسئلة مصورة لكل مجموعة بالتساوي مع أصوات تشجيع وتصفيق.</p>
+    <div class="grid-2">
+      <input id="g0" value="🌸 مجموعة الزهرات">
+      <input id="g1" value="🦋 مجموعة الفراشات">
+      <input id="g2" value="⭐ مجموعة النجمات">
+      <input id="g3" value="🌿 مجموعة الرياحين">
+    </div>
+    <button id="startBtn" class="btn btn-main" type="button">ابدأ المسابقة الآن</button>
+  </div>
+
+  <div id="gamePanel" class="panel hide">
+    <div id="scores" class="scores"></div>
+    <div id="turn" style="font-weight:700;color:#0284c7;"></div>
+    <h2 id="question" style="margin:8px 0 12px;"></h2>
+    <div id="opts" class="opts"></div>
+    <div id="msg" class="msg hide"></div>
+    <div class="bar">
+      <button id="soundBtn" class="btn btn-soft" type="button">👏 الصوت والتصفيق: مفعل</button>
+      <button id="nextBtn" class="btn btn-main" style="width:auto;" type="button" disabled>السؤال التالي</button>
+    </div>
+  </div>
+
+  <div id="endPanel" class="panel hide">
+    <h2>🏆 ترتيب المجموعات الأربع</h2>
+    <div id="ranks" style="margin:12px 0;"></div>
+    <button id="againBtn" class="btn btn-main" type="button">اللعب مرة أخرى</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var DATA = [
+    { q: "أي من الأمراض التالية يُعد مرضاً معدياً؟", opts: [["الإنفلونزا","🤧"],["السكري","🩺"],["الربو","🫁"],["ضغط الدم","❤️"]], ans: 0 },
+    { q: "أي من الأمراض التالية يُعد مرضاً غير معدٍ؟", opts: [["السكري","🩸"],["الحصبة","🔴"],["جدري الماء","🤒"],["السعال الديكي","😷"]], ans: 0 },
+    { q: "ما السلوك الأهم للوقاية من الأمراض المعدية؟", opts: [["غسل اليدين بالماء والصابون","🧼"],["مشاركة الأكواب","🥤"],["إغلاق النوافذ","🚪"],["عدم تغطية الفم","😮"]], ans: 0 },
+    { q: "ما المسبب الرئيسي للأمراض المعدية؟", opts: [["البكتيريا والفيروسات","🦠"],["كسر العظام","🦴"],["نقص فيتامين د","☀️"],["حساسية الغبار","🌪️"]], ans: 0 },
+    { q: "أي سلوك يرفع خطر الإصابة بالأمراض غير المعدية؟", opts: [["التدخين وقلة الحركة","🚭"],["غسل الخضروات","🥗"],["التطعيمات","💉"],["تعقيم الجروح","🩹"]], ans: 0 },
+    { q: "كيف تحمي اللقاحات الجسم؟", opts: [["تقوي جهاز المناعة","🛡️"],["تجبر الكسور","🦴"],["تمنع التسوس","🦷"],["تعوض الماء","💧"]], ans: 0 },
+    { q: "جدري الماء يُصنف ضمن:", opts: [["الأمراض المعدية","🦠"],["الأمراض الوراثية","🧬"],["إصابات الملاعب","⚽"],["أمراض السمع","👂"]], ans: 0 },
+    { q: "ما السلوك الأهم للوقاية من الأمراض غير المعدية؟", opts: [["غذاء متوازن ورياضة","🏃‍♀️"],["كثرة السكريات","🍩"],["إهمال الفحص","📋"],["الجلوس الطويل","🪑"]], ans: 0 },
+    { q: "كيف نقلل انتقال العدوى التنفسية؟", opts: [["تغطية الفم بمنديل","🧻"],["منشفة المريض","🧺"],["مشاركة الأكواب","🥛"],["إغلاق النوافذ","🪟"]], ans: 0 },
+    { q: "ما الفرق بين المرض المعدي وغير المعدي؟", opts: [["المعدي ينتقل وغير المعدي لا ينتقل","↔️"],["المعدي للكبار فقط","👵"],["كلاهما باللمس","🤝"],["لا فرق","❓"]], ans: 0 },
+    { q: "لماذا نغسل الفواكه والخضروات جيداً؟", opts: [["لإزالة الجراثيم","🍎"],["لتغيير اللون","🎨"],["لزيادة الوزن","⚖️"],["لجعلها غير معدية","🥦"]], ans: 0 },
+    { q: "ضغط الدم المرتفع يُعد:", opts: [["مرضاً غير معدٍ","💓"],["عدوى بكتيرية","🦠"],["مرضاً ينتقل بالهواء","💨"],["طفحاً معدياً","🔴"]], ans: 0 }
+  ];
+
+  var groups = [], step = 0, locked = false, sound = true;
+  var activeQuestions = [];
+  var setupPanel = document.getElementById("setupPanel");
+  var gamePanel = document.getElementById("gamePanel");
+  var endPanel = document.getElementById("endPanel");
+  var scores = document.getElementById("scores");
+  var turn = document.getElementById("turn");
+  var question = document.getElementById("question");
+  var opts = document.getElementById("opts");
+  var msg = document.getElementById("msg");
+  var nextBtn = document.getElementById("nextBtn");
+  var soundBtn = document.getElementById("soundBtn");
+  var ranks = document.getElementById("ranks");
+
+  function clapSound(ok) {
+    if (!sound) return;
+    try {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      var ctx = new Ctx();
+      var now = ctx.currentTime;
+      if (ok) {
+        // نغمة تشجيعية صاعدة ناعمة ودافئة (Do - Mi - Sol - Do)
+        var notes = [523.25, 659.25, 783.99, 1046.5];
+        notes.forEach(function (freq, idx) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          var start = now + idx * 0.11;
+          var dur = idx === notes.length - 1 ? 0.36 : 0.18;
+
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(freq, start);
+
+          gain.gain.setValueAtTime(0.0001, start);
+          gain.gain.linearRampToValueAtTime(0.085, start + 0.025);
+          gain.gain.exponentialRampToValueAtTime(0.0008, start + dur);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(start);
+          osc.stop(start + dur + 0.02);
+        });
+      } else {
+        // نغمة تنبيه هادئة قصيرة غير مزعجة
+        var softNotes = [392.0, 329.63];
+        softNotes.forEach(function (freq, idx) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          var start = now + idx * 0.14;
+          var dur = 0.2;
+
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, start);
+
+          gain.gain.setValueAtTime(0.0001, start);
+          gain.gain.linearRampToValueAtTime(0.06, start + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0008, start + dur);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(start);
+          osc.stop(start + dur + 0.02);
+        });
+      }
+    } catch (e) {}
+  }
+
+  function shuffleList(list) {
+    var copy = list.slice();
+    for (var i = copy.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = copy[i];
+      copy[i] = copy[j];
+      copy[j] = temp;
+    }
+    return copy;
+  }
+
+  function buildShuffledQuestions() {
+    return shuffleList(DATA).map(function (item) {
+      var correctOption = item.opts[item.ans];
+      var mixedOpts = shuffleList(item.opts);
+      var newAns = mixedOpts.indexOf(correctOption);
+      return {
+        q: item.q,
+        opts: mixedOpts,
+        ans: newAns
+      };
+    });
+  }
+
+  function drawScores() {
+    var cur = step % groups.length;
+    scores.innerHTML = "";
+    groups.forEach(function (g, i) {
+      scores.innerHTML += '<div class="score-card ' + (i === cur ? "now" : "") + '"><strong>' + g.name + '</strong><b>' + g.pts + '</b></div>';
+    });
+  }
+
+  function showStep() {
+    locked = false;
+    nextBtn.disabled = true;
+    msg.className = "msg hide";
+    var cur = step % groups.length;
+    var item = activeQuestions[step];
+    drawScores();
+    turn.textContent = "السؤال " + (step + 1) + " من " + activeQuestions.length + " • دور: " + groups[cur].name;
+    question.textContent = item.q;
+    opts.innerHTML = "";
+    item.opts.forEach(function (o, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "opt";
+      b.innerHTML = '<span class="ico">' + o[1] + '</span><span>' + o[0] + '</span>';
+      b.onclick = function () {
+        if (locked) return;
+        locked = true;
+        var all = opts.querySelectorAll("button");
+        all.forEach(function (btn, idx) {
+          btn.disabled = true;
+          if (idx === item.ans) btn.classList.add("good");
+          if (idx === i && i !== item.ans) btn.classList.add("bad");
+        });
+        if (i === item.ans) {
+          groups[cur].pts += 1;
+          msg.className = "msg good";
+          msg.textContent = "👏 تصفيق حار يا " + groups[cur].name + "! إجابة صحيحة وممتازة.";
+          clapSound(true);
+        } else {
+          msg.className = "msg bad";
+          msg.textContent = "❌ إجابة خاطئة — الإجابة الصحيحة هي: " + item.opts[item.ans][0];
+          clapSound(false);
+        }
+        drawScores();
+        nextBtn.disabled = false;
+      };
+      opts.appendChild(b);
+    });
+  }
+
+  document.getElementById("startBtn").onclick = function () {
+    groups = [
+      { name: document.getElementById("g0").value.trim() || "🌸 مجموعة الزهرات", pts: 0 },
+      { name: document.getElementById("g1").value.trim() || "🦋 مجموعة الفراشات", pts: 0 },
+      { name: document.getElementById("g2").value.trim() || "⭐ مجموعة النجمات", pts: 0 },
+      { name: document.getElementById("g3").value.trim() || "🌿 مجموعة الرياحين", pts: 0 }
+    ];
+    activeQuestions = buildShuffledQuestions();
+    step = 0;
+    setupPanel.classList.add("hide");
+    endPanel.classList.add("hide");
+    gamePanel.classList.remove("hide");
+    showStep();
+  };
+
+  nextBtn.onclick = function () {
+    if (!locked) return;
+    step += 1;
+    if (step < activeQuestions.length) {
+      showStep();
+    } else {
+      gamePanel.classList.add("hide");
+      endPanel.classList.remove("hide");
+      var medals = ["🥇", "🥈", "🥉", "🏅"];
+      var sorted = groups.slice().sort(function (a, b) { return b.pts - a.pts; });
+      ranks.innerHTML = sorted.map(function (g, i) {
+        return '<div class="rank"><span>' + medals[i] + " " + g.name + '</span><span>' + g.pts + ' / 3</span></div>';
+      }).join("");
+      clapSound(true);
+    }
+  };
+
+  document.getElementById("againBtn").onclick = function () {
+    endPanel.classList.add("hide");
+    setupPanel.classList.remove("hide");
+  };
+
+  soundBtn.onclick = function () {
+    sound = !sound;
+    soundBtn.textContent = sound ? "👏 الصوت والتصفيق: مفعل" : "🔇 الصوت: متوقف";
+  };
+})();
+</script>
+</body>
+</html>
